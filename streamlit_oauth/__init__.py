@@ -16,14 +16,16 @@ _RELEASE = False
 _RELEASE = True
 
 if not _RELEASE:
-  _authorize_button = components.declare_component(
-    "authorize_button",
+  authorize_button_args = dict(
     url="http://localhost:3000", # vite dev server port
   )
+
 else:
   parent_dir = os.path.dirname(os.path.abspath(__file__))
   build_dir = os.path.join(parent_dir, "frontend/dist")
-  _authorize_button = components.declare_component("authorize_button", path=build_dir)
+  authorize_button_kwargs = dict(
+    path=build_dir
+  )
 
 
 class StreamlitOauthError(Exception):
@@ -88,6 +90,12 @@ class OAuth2Component:
     ))
 
     # print(f'generated authorize request: {authorize_request}')
+
+
+    _authorize_button = components.declare_component(
+      "authorize_button",
+      **authorize_button_kwargs,
+    )
 
     result = _authorize_button(
       authorization_url=authorize_request,
